@@ -13,6 +13,10 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
+# Local databases / secrets
+*.db
+app/instance/
+
 # Data / model artifacts (usually large)
 Data-raw/
 Data-processed/
