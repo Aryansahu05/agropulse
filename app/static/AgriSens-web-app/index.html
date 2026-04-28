@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AgriSens — AgroPulse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --az-bg: #0B0F0C;
+        --az-bg-2: #0F2A1D;
+        --az-accent: #22C55E;
+        --az-text: #FFFFFF;
+        --az-muted: #A3A3A3;
+        --az-radius: 16px;
+      }
+      body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: radial-gradient(1200px 600px at 20% 0%, rgba(34, 197, 94, 0.12), transparent 60%),
+          linear-gradient(180deg, var(--az-bg) 0%, #070A08 100%);
+        color: var(--az-text);
+      }
+      .wrap {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 20px;
+      }
+      .card {
+        width: min(980px, 100%);
+        background: rgba(15, 42, 29, 0.55);
+        border: 1px solid rgba(34, 197, 94, 0.14);
+        border-radius: var(--az-radius);
+        box-shadow: 0 10px 36px rgba(0, 0, 0, 0.35);
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      @media (max-width: 900px) {
+        .card { grid-template-columns: 1fr; }
+      }
+      .left, .right { padding: 56px; }
+      @media (max-width: 900px) {
+        .left, .right { padding: 40px; }
+        .right { border-top: 1px solid rgba(34, 197, 94, 0.12); }
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      .badge {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.22);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--az-accent);
+        font-weight: 700;
+      }
+      h1 { margin: 0 0 10px; font-size: 34px; line-height: 1.12; }
+      p { margin: 0; color: var(--az-muted); line-height: 1.7; }
+      .btn {
+        margin-top: 22px;
+        display: inline-block;
+        padding: 12px 16px;
+        background: var(--az-accent);
+        color: #0B0F0C;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 700;
+      }
+      .btn:hover { filter: brightness(1.06); }
+      .kicker { color: var(--az-accent); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; font-size: 12px; }
+      ul { margin: 18px 0 0; padding-left: 18px; color: var(--az-muted); }
+      li { margin: 8px 0; }
+      .right h2 { margin: 0 0 10px; }
+      .link {
+        color: var(--az-accent);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .link:hover { filter: brightness(1.08); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="card">
+        <div class="left">
+          <div class="brand">
+            <div class="badge">AP</div>
+            <div>
+              <div style="font-weight:700;">AgriSens</div>
+              <div class="kicker">Smart Farming with AI</div>
+            </div>
+          </div>
+          <h1>AgriSens Web App</h1>
+          <p>
+            This is the AgriSens web experience connected to AgroPulse. If you have the full original AgriSens files,
+            drop them into <code>app/static/AgriSens-web-app/</code> and this page will be replaced automatically.
+          </p>
+          <ul>
+            <li>Guide & documentation</li>
+            <li>Static dashboard pages</li>
+            <li>Connected from AgroPulse “Launch Platform”</li>
+          </ul>
+          <a class="btn" href="./guide/index.html">Open Guide</a>
+        </div>
+        <div class="right" style="background: rgba(11, 15, 12, 0.75);">
+          <h2>Next step (optional)</h2>
+          <p>
+            If you want the real AgriSens UI (not this placeholder), send me the AgriSens folder or zip and I’ll restore
+            the full static app into this path.
+          </p>
+          <p style="margin-top: 16px;">
+            Go back to AgroPulse home:
+            <a class="link" href="/">AgroPulse</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

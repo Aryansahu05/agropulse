@@ -1,0 +1,5 @@
+# Install from the repository root (parent folder):
+#   pip install -r requirements.txt
+#
+# Or from this directory:
+-r ../requirements.txt

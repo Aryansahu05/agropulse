@@ -1,0 +1,76 @@
+{% extends 'layout.html' %}
+{% block page_body %}
+
+<div class="an-grid">
+  <section class="an-col-7 an-card an-card--hover">
+    <div class="an-card__hd">
+      <h2 class="an-card__title">Recommended crop</h2>
+      <div class="an-card__sub">Based on your soil + climate signals.</div>
+    </div>
+    <div class="an-card__bd">
+      <div class="an-card" style="padding: 14px 14px;">
+        <div style="display:flex; align-items:flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+          <div>
+            <div style="color: var(--an-muted); font-weight: 800; font-size: 12px;">Crop</div>
+            <div style="font-size: 26px; font-weight: 1000; margin-top: 6px;">{{ crop }}</div>
+            {% if category %}
+              <div style="color: var(--an-muted); font-size: 12px; margin-top: 6px;">Category: <b style="color: var(--an-text);">{{ category }}</b></div>
+            {% endif %}
+            {% if confidence is not none %}
+              <div style="color: var(--an-muted); font-size: 12px; margin-top: 6px;">Confidence: <b style="color: var(--an-accent);">{{ '{:.1%}'.format(confidence) }}</b></div>
+            {% endif %}
+          </div>
+          <div class="an-icon-box" style="width: 56px; height: 56px; border-radius: 16px;">
+            <i class="fa fa-leaf" style="font-size: 18px;"></i>
+          </div>
+        </div>
+        {% if tip %}
+          <div style="margin-top: 12px; color: var(--an-muted); font-size: 12px; line-height: 1.7;">
+            <b style="color: var(--an-text);">Growing tip:</b> {{ tip }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="d-flex flex-wrap" style="gap: 10px; margin-top: 14px;">
+        <a class="an-btn an-btn--primary" href="{{ url_for('fertilizer_recommendation', crop=crop_label) }}">
+          <i class="fa fa-flask"></i> Check fertilizer suggestions
+        </a>
+        <a class="an-btn an-btn--ghost" href="{{ url_for('crop_recommendation') }}">
+          <i class="fa fa-arrow-left"></i> New prediction
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <aside class="an-col-5 an-card an-card--hover">
+    <div class="an-card__hd">
+      <h3 class="an-card__title">Top alternatives</h3>
+      <div class="an-card__sub">Your top-3 crop suggestions.</div>
+    </div>
+    <div class="an-card__bd">
+      {% if top_crops %}
+        <div class="an-grid">
+          {% for item in top_crops %}
+            <div class="an-col-12 an-card an-card--hover" style="padding: 14px 14px;">
+              <div style="display:flex; justify-content: space-between; gap: 12px; align-items:flex-start;">
+                <div>
+                  <div style="font-weight: 1000; font-size: 13px;">{{ loop.index }}. {{ item.name }}</div>
+                  {% if item.category %}
+                    <div style="color: var(--an-muted); font-size: 12px; margin-top: 4px;">{{ item.category }}</div>
+                  {% endif %}
+                </div>
+                <div style="font-weight: 1000; color: var(--an-accent);">
+                  {{ '{:.1%}'.format(item.probability) }}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div style="color: var(--an-muted); font-size: 12px;">No alternative list available.</div>
+      {% endif %}
+    </div>
+  </aside>
+</div>
+
+{% endblock %}

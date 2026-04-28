@@ -1,0 +1,339 @@
+{% extends 'layout.html' %}
+{% block page_body %}
+<div class="an-grid">
+  <section class="an-col-5 an-card an-card--hover">
+    <div class="an-card__hd">
+      <h2 class="an-card__title">Profit Optimizer</h2>
+      <div class="an-card__sub">Estimate costs, revenue, and profit. Optional AI mode suggests better crops.</div>
+    </div>
+    <div class="an-card__bd">
+      <form id="profitForm">
+        <div class="an-grid">
+          <div class="an-col-12">
+            <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Crop type</label>
+            <select name="crop_type" class="an-select" required>
+              <option value="" selected disabled>Select crop</option>
+              <option value="wheat">Wheat</option>
+              <option value="rice">Rice</option>
+              <option value="maize">Maize</option>
+              <option value="tomato">Tomato</option>
+              <option value="potato">Potato</option>
+              <option value="onion">Onion</option>
+              <option value="chickpea">Chickpea</option>
+              <option value="lentil">Lentil</option>
+              <option value="soybean">Soybean</option>
+              <option value="cotton">Cotton</option>
+            </select>
+          </div>
+
+          <div class="an-col-6">
+            <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Land area (acres)</label>
+            <input name="land_area_acres" type="number" step="any" class="an-input" placeholder="e.g. 2" required />
+          </div>
+          <div class="an-col-6">
+            <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Market price (&rupee;/kg)</label>
+            <input name="market_price" type="number" step="any" class="an-input" placeholder="e.g. 22" required />
+          </div>
+
+          <div class="an-col-6">
+            <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Expected yield (kg/acre)</label>
+            <input name="expected_yield" type="number" step="any" class="an-input" placeholder="e.g. 2800" required />
+          </div>
+          <div class="an-col-6">
+            <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Seed cost</label>
+            <input name="cost_seeds" type="number" step="any" class="an-input" placeholder="e.g. 5000" required />
+          </div>
+          <div class="an-col-6">
+            <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Fertilizer cost</label>
+            <input name="fertilizer_cost" type="number" step="any" class="an-input" placeholder="e.g. 3000" required />
+          </div>
+          <div class="an-col-6">
+            <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Labor cost</label>
+            <input name="labor_cost" type="number" step="any" class="an-input" placeholder="e.g. 4000" required />
+          </div>
+          <div class="an-col-12">
+            <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Irrigation cost</label>
+            <input name="irrigation_cost" type="number" step="any" class="an-input" placeholder="e.g. 2000" required />
+          </div>
+
+          <div class="an-col-12">
+            <div class="an-card" style="padding: 12px 12px;">
+              <div class="d-flex align-items-center justify-content-between flex-wrap" style="gap: 10px;">
+                <div>
+                  <div style="font-weight: 900; font-size: 13px;">Use AI predictions</div>
+                  <div style="color: var(--an-muted); font-size: 12px; margin-top: 4px;">AI estimates yield + future price for better suggestions.</div>
+                </div>
+                <label style="display:flex; gap: 10px; align-items:center; margin: 0; color: var(--an-muted); font-weight: 900; font-size: 12px;">
+                  <input type="checkbox" name="use_ai" value="1" checked style="accent-color: #C36A4A;" />
+                  Enabled
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="an-col-6">
+            <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Rainfall (mm)</label>
+            <input name="rainfall_mm" type="number" step="any" class="an-input" placeholder="e.g. 500" />
+          </div>
+          <div class="an-col-6">
+            <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Temperature (&deg;C)</label>
+            <input name="temperature_c" type="number" step="any" class="an-input" placeholder="e.g. 25" />
+          </div>
+
+          <div class="an-col-12">
+            <div class="an-card" style="padding: 12px 12px;">
+              <div class="d-flex align-items-center justify-content-between flex-wrap" style="gap: 10px;">
+                <div>
+                  <div style="font-weight: 900; font-size: 13px;">Compare a second crop</div>
+                  <div style="color: var(--an-muted); font-size: 12px; margin-top: 4px;">Optional side-by-side profit comparison.</div>
+                </div>
+                <label style="display:flex; gap: 10px; align-items:center; margin: 0; color: var(--an-muted); font-weight: 900; font-size: 12px;">
+                  <input type="checkbox" id="compareToggle" checked style="accent-color: #C36A4A;" />
+                  Enabled
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div id="compareSection" class="an-col-12">
+            <div class="an-grid">
+              <div class="an-col-12">
+                <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Second crop type</label>
+                <select name="crop_type_2" class="an-select">
+                  <option value="" selected disabled>Select second crop</option>
+                  <option value="wheat">Wheat</option>
+                  <option value="rice">Rice</option>
+                  <option value="maize">Maize</option>
+                  <option value="tomato">Tomato</option>
+                  <option value="potato">Potato</option>
+                  <option value="onion">Onion</option>
+                  <option value="chickpea">Chickpea</option>
+                  <option value="lentil">Lentil</option>
+                  <option value="soybean">Soybean</option>
+                  <option value="cotton">Cotton</option>
+                </select>
+              </div>
+              <div class="an-col-6">
+                <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Expected yield 2</label>
+                <input name="expected_yield_2" type="number" step="any" class="an-input" placeholder="e.g. 2500" />
+              </div>
+              <div class="an-col-6">
+                <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Market price 2</label>
+                <input name="market_price_2" type="number" step="any" class="an-input" placeholder="e.g. 20" />
+              </div>
+              <input type="hidden" name="compare_crop_2" value="1" />
+            </div>
+          </div>
+
+          <div class="an-col-12">
+            <button id="profitOptimizeBtn" type="submit" class="an-btn an-btn--primary an-btn--full">
+              <i class="fa fa-magic"></i> Optimize profit
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="an-col-7 an-card an-card--hover">
+    <div class="an-card__hd">
+      <h3 class="an-card__title">Results</h3>
+      <div class="an-card__sub">Clear metrics + chart outputs.</div>
+    </div>
+    <div class="an-card__bd">
+      <div class="an-grid">
+        <div class="an-col-6 an-card" style="padding: 14px 14px;">
+          <div style="color: var(--an-muted); font-weight: 800; font-size: 12px;">Total cost</div>
+          <div id="totalCost" style="font-size: 22px; font-weight: 900; margin-top: 6px;">&mdash;</div>
+        </div>
+        <div class="an-col-6 an-card" style="padding: 14px 14px;">
+          <div style="color: var(--an-muted); font-weight: 800; font-size: 12px;">Expected revenue</div>
+          <div id="revenueAmount" style="font-size: 22px; font-weight: 900; margin-top: 6px;">&mdash;</div>
+        </div>
+
+        <div class="an-col-12 an-card" id="profitBox" style="padding: 14px 14px; border: 1px solid var(--an-border-2);">
+          <div class="d-flex align-items-center justify-content-between flex-wrap" style="gap: 10px;">
+            <div>
+              <div style="color: var(--an-muted); font-weight: 800; font-size: 12px;">Net profit</div>
+              <div id="profitAmount" style="font-size: 26px; font-weight: 1000; margin-top: 6px;">&mdash;</div>
+              <div id="profitUnitHint" style="color: var(--an-muted); font-size: 12px; margin-top: 6px;"></div>
+            </div>
+            <div class="an-icon-box" style="width: 44px; height: 44px;">
+              <i id="profitIcon" class="fa fa-line-chart"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="an-col-12 an-card" style="padding: 14px 14px;">
+          <div style="font-weight: 900; font-size: 13px;">Cost vs Revenue</div>
+          <div style="color: var(--an-muted); font-size: 12px; margin-top: 4px;">Visual breakdown.</div>
+          <div style="margin-top: 12px;">
+            <canvas id="profitCostRevenueChart" height="120"></canvas>
+          </div>
+        </div>
+
+        <div id="compareResultWrap" class="an-col-12 an-card" style="padding: 14px 14px; display:none;">
+          <div style="font-weight: 900; font-size: 13px;">Second crop comparison</div>
+          <div style="color: var(--an-muted); font-size: 12px; margin-top: 4px;">Only shown when enabled.</div>
+          <div style="margin-top: 12px;">
+            <canvas id="profitCostRevenueChart2" height="120"></canvas>
+          </div>
+        </div>
+
+        <div class="an-col-12 an-card" style="padding: 14px 14px;">
+          <div style="font-weight: 900; font-size: 13px;">Suggestion</div>
+          <div id="profitSuggestion" style="color: var(--an-muted); font-size: 12px; margin-top: 6px;">&mdash;</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="spinner-overlay" id="spinnerOverlay" style="display:none; position: fixed; inset: 0; background: rgba(44,58,46,0.35); z-index: 1000; align-items:center; justify-content:center; padding: 16px;">
+  <div class="an-card" style="width: min(520px, 96vw); padding: 16px 16px;">
+    <div style="display:flex; gap: 12px; align-items:center;">
+      <div class="an-icon-box" style="width:44px; height:44px;">
+        <i class="fa fa-spinner fa-spin"></i>
+      </div>
+      <div>
+        <div style="font-weight: 1000;">Calculating&hellip;</div>
+        <div style="color: var(--an-muted); font-size: 12px; margin-top: 4px;">Optimizing profit using prediction logic.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const spinnerOverlay = document.getElementById("spinnerOverlay");
+  const compareToggle = document.getElementById("compareToggle");
+  const compareSection = document.getElementById("compareSection");
+  const compareResultWrap = document.getElementById("compareResultWrap");
+
+  function formatINR(n) {
+    if (typeof n !== "number" || !Number.isFinite(n)) return "\u2014";
+    return "\u20B9" + n.toLocaleString(undefined, { maximumFractionDigits: 2 });
+  }
+
+  let chart1 = null;
+  let chart2 = null;
+
+  function renderCostRevenueChart(canvasId, cost, revenue) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas || typeof Chart === "undefined") return;
+    const ctx = canvas.getContext("2d");
+    const label = ["Cost", "Revenue"];
+    const values = [cost, revenue];
+
+    const existing = canvasId === "profitCostRevenueChart" ? chart1 : chart2;
+    if (existing) existing.destroy();
+
+    const newChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: label,
+        datasets: [{
+          label: "\u20B9",
+          data: values,
+          backgroundColor: ["rgba(195,106,74,0.14)", "rgba(49,98,99,0.14)"],
+          borderColor: ["#C36A4A", "#316263"],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) { return " " + formatINR(ctx.raw); }
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { color: "rgba(44,58,46,0.58)" }, grid: { color: "rgba(49,98,99,0.08)" } },
+          y: { beginAtZero: true, ticks: { color: "rgba(44,58,46,0.58)", callback: function(v) { return formatINR(v); } }, grid: { color: "rgba(49,98,99,0.08)" } }
+        }
+      }
+    });
+
+    if (canvasId === "profitCostRevenueChart") chart1 = newChart;
+    else chart2 = newChart;
+  }
+
+  function setProfitBox(profit) {
+    const box = document.getElementById("profitBox");
+    const icon = document.getElementById("profitIcon");
+    const amount = document.getElementById("profitAmount");
+    const hint = document.getElementById("profitUnitHint");
+
+    const val = typeof profit === "number" && Number.isFinite(profit) ? profit : null;
+    if (val === null) {
+      amount.textContent = "\u2014";
+      icon.className = "fa fa-line-chart";
+      hint.textContent = "";
+      return;
+    }
+
+    amount.textContent = formatINR(val);
+    if (val >= 0) {
+      icon.className = "fa fa-arrow-up";
+      hint.textContent = "Profit is positive.";
+      box.style.borderColor = "rgba(49,98,99,0.22)";
+    } else {
+      icon.className = "fa fa-arrow-down";
+      hint.textContent = "Net profit is negative.";
+      box.style.borderColor = "rgba(195,106,74,0.22)";
+    }
+  }
+
+  document.getElementById("profitForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    var btn = document.getElementById("profitOptimizeBtn");
+    btn.disabled = true;
+    spinnerOverlay.style.display = "flex";
+
+    try {
+      var fd = new FormData(e.target);
+      if (!compareToggle.checked) {
+        fd.delete("compare_crop_2");
+        fd.delete("crop_type_2");
+        fd.delete("expected_yield_2");
+        fd.delete("market_price_2");
+      }
+
+      var res = await fetch("/predict-profit", { method: "POST", body: fd });
+      var data = await res.json().catch(function() { return null; });
+      if (!res.ok) throw new Error(data && data.error ? data.error : "Request failed");
+
+      document.getElementById("totalCost").textContent = formatINR(data.total_cost);
+      document.getElementById("revenueAmount").textContent = formatINR(data.revenue);
+      setProfitBox(data.profit);
+      document.getElementById("profitSuggestion").textContent = data.suggestion || "\u2014";
+
+      renderCostRevenueChart("profitCostRevenueChart", data.total_cost, data.revenue);
+
+      var hasCompare = !!data.compare;
+      compareResultWrap.style.display = hasCompare ? "block" : "none";
+      if (hasCompare) {
+        document.getElementById("profitSuggestion").textContent = data.suggestion || "\u2014";
+        renderCostRevenueChart("profitCostRevenueChart2", data.compare.total_cost, data.compare.revenue);
+      }
+    } catch (err) {
+      alert(err && err.message ? err.message : "Something went wrong");
+    } finally {
+      btn.disabled = false;
+      spinnerOverlay.style.display = "none";
+    }
+  });
+
+  function syncCompareVisibility() {
+    var enabled = compareToggle.checked;
+    compareSection.style.display = enabled ? "block" : "none";
+    compareResultWrap.style.display = "none";
+  }
+
+  compareToggle.addEventListener("change", syncCompareVisibility);
+  syncCompareVisibility();
+</script>
+{% endblock %}

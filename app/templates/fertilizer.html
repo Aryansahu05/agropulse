@@ -1,0 +1,118 @@
+{% extends 'layout.html' %}
+{% block page_body %}
+
+<div class="an-grid">
+  <section class="an-col-7 an-card an-card--hover">
+    <div class="an-card__hd">
+      <h2 class="an-card__title">Fertilizer Optimizer</h2>
+      <div class="an-card__sub">Get informed fertilizer advice based on your soil nutrients and crop.</div>
+    </div>
+    <div class="an-card__bd">
+      {% if error %}
+        <div class="alert alert-danger" role="alert" style="border-radius: 14px;">{{ error }}</div>
+      {% endif %}
+
+      <form id="fert-form" method="POST" action="{{ url_for('fert_recommend') }}">
+        <div class="an-grid">
+          <div class="an-col-4">
+            <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Nitrogen</label>
+            <input type="number" class="an-input" name="nitrogen" placeholder="e.g. 50" required />
+          </div>
+          <div class="an-col-4">
+            <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Phosphorous</label>
+            <input type="number" class="an-input" name="phosphorous" placeholder="e.g. 50" required />
+          </div>
+          <div class="an-col-4">
+            <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Potassium</label>
+            <input type="number" class="an-input" name="pottasium" placeholder="e.g. 50" required />
+          </div>
+
+          <div class="an-col-12">
+            <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Crop</label>
+            <select name="cropname" class="an-select" required>
+              <option value="" {% if not preselected_crop %}selected{% endif %}>Select crop</option>
+              <option value="rice" {% if preselected_crop == 'rice' %}selected{% endif %}>Rice</option>
+              <option value="maize" {% if preselected_crop == 'maize' %}selected{% endif %}>Maize</option>
+              <option value="chickpea" {% if preselected_crop == 'chickpea' %}selected{% endif %}>Chickpea</option>
+              <option value="kidneybeans" {% if preselected_crop == 'kidneybeans' %}selected{% endif %}>Kidney beans</option>
+              <option value="pigeonpeas" {% if preselected_crop == 'pigeonpeas' %}selected{% endif %}>Pigeon peas</option>
+              <option value="mothbeans" {% if preselected_crop == 'mothbeans' %}selected{% endif %}>Moth beans</option>
+              <option value="mungbean" {% if preselected_crop == 'mungbean' %}selected{% endif %}>Mung bean</option>
+              <option value="blackgram" {% if preselected_crop == 'blackgram' %}selected{% endif %}>Black gram</option>
+              <option value="lentil" {% if preselected_crop == 'lentil' %}selected{% endif %}>Lentil</option>
+              <option value="pomegranate" {% if preselected_crop == 'pomegranate' %}selected{% endif %}>Pomegranate</option>
+              <option value="banana" {% if preselected_crop == 'banana' %}selected{% endif %}>Banana</option>
+              <option value="mango" {% if preselected_crop == 'mango' %}selected{% endif %}>Mango</option>
+              <option value="grapes" {% if preselected_crop == 'grapes' %}selected{% endif %}>Grapes</option>
+              <option value="watermelon" {% if preselected_crop == 'watermelon' %}selected{% endif %}>Watermelon</option>
+              <option value="muskmelon" {% if preselected_crop == 'muskmelon' %}selected{% endif %}>Muskmelon</option>
+              <option value="apple" {% if preselected_crop == 'apple' %}selected{% endif %}>Apple</option>
+              <option value="orange" {% if preselected_crop == 'orange' %}selected{% endif %}>Orange</option>
+              <option value="papaya" {% if preselected_crop == 'papaya' %}selected{% endif %}>Papaya</option>
+              <option value="coconut" {% if preselected_crop == 'coconut' %}selected{% endif %}>Coconut</option>
+              <option value="cotton" {% if preselected_crop == 'cotton' %}selected{% endif %}>Cotton</option>
+              <option value="jute" {% if preselected_crop == 'jute' %}selected{% endif %}>Jute</option>
+              <option value="coffee" {% if preselected_crop == 'coffee' %}selected{% endif %}>Coffee</option>
+            </select>
+          </div>
+
+          <div class="an-col-12">
+            <div class="d-flex flex-wrap" style="gap: 10px; align-items: center;">
+              <button id="fert-btn" type="submit" class="an-btn an-btn--primary">
+                <i class="fa fa-flask"></i> Optimize
+              </button>
+              <div id="fert-loader" style="display:none; align-items:center; gap: 10px; color: var(--an-muted); font-weight: 700; font-size: 12px;">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Calculating recommendation...
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <aside class="an-col-5 an-card an-card--hover">
+    <div class="an-card__hd">
+      <h3 class="an-card__title">Smart guidance</h3>
+      <div class="an-card__sub">Designed to be clear and actionable.</div>
+    </div>
+    <div class="an-card__bd">
+      <div class="an-grid">
+        <div class="an-col-12 an-card" style="padding: 14px 14px;">
+          <div style="display:flex; gap: 12px;">
+            <div class="an-icon-box"><i class="fa fa-balance-scale"></i></div>
+            <div>
+              <div style="font-weight: 900; font-size: 13px;">Balanced nutrients</div>
+              <div style="color: var(--an-muted); font-size: 12px; margin-top: 4px;">Highlights which nutrient is most off-target.</div>
+            </div>
+          </div>
+        </div>
+        <div class="an-col-12 an-card" style="padding: 14px 14px;">
+          <div style="display:flex; gap: 12px;">
+            <div class="an-icon-box"><i class="fa fa-bolt"></i></div>
+            <div>
+              <div style="font-weight: 900; font-size: 13px;">Fast output</div>
+              <div style="color: var(--an-muted); font-size: 12px; margin-top: 4px;">Recommendation appears immediately after submit.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+  (function () {
+    var form = document.getElementById('fert-form');
+    var btn = document.getElementById('fert-btn');
+    var loader = document.getElementById('fert-loader');
+    if (!form || !btn || !loader) return;
+    form.addEventListener('submit', function () {
+      btn.disabled = true;
+      loader.style.display = 'inline-flex';
+    });
+  })();
+</script>
+
+{% endblock %}

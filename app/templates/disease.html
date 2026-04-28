@@ -1,0 +1,121 @@
+{% extends 'layout.html' %}
+{% block page_body %}
+
+<div class="an-grid">
+  <section class="an-col-7 an-card an-card--hover">
+    <div class="an-card__hd">
+      <h2 class="an-card__title">Disease Detection</h2>
+      <div class="an-card__sub">Upload a leaf image and let the model detect the most likely disease.</div>
+    </div>
+    <div class="an-card__bd">
+      {% if error %}
+        <div class="alert alert-warning" role="alert" style="border-radius: 14px;">{{ error }}</div>
+      {% endif %}
+
+      <form id="disease-form" method="post" enctype="multipart/form-data">
+        <div class="an-grid">
+          <div class="an-col-12">
+            <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 800; margin-bottom: 8px;">Leaf image</label>
+            <input
+              type="file"
+              name="file"
+              id="inputfile"
+              accept="image/*"
+              onchange="preview_image(event)"
+              class="an-input"
+              style="padding: 10px 12px;"
+              required
+            />
+            <div class="an-help">Tip: use a clear, well-lit image with the leaf centered.</div>
+          </div>
+
+          <div class="an-col-12">
+            <div class="an-card" style="padding: 12px 12px;">
+              <img id="output-image" alt="Preview" style="width: 100%; height: 280px; object-fit: cover; border-radius: 14px; display:none; border: 1px solid var(--an-border-2);" />
+              <div id="preview-skeleton" class="an-skel" style="height: 280px; width: 100%; border-radius: 14px;"></div>
+            </div>
+          </div>
+
+          <div class="an-col-12">
+            <div class="d-flex flex-wrap" style="gap: 10px; align-items: center;">
+              <button id="disease-btn" class="an-btn an-btn--primary" type="submit">
+                <i class="fa fa-search"></i> Detect disease
+              </button>
+              <div id="disease-loader" style="display:none; align-items:center; gap: 10px; color: var(--an-muted); font-weight: 700; font-size: 12px;">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Analyzing image...
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <aside class="an-col-5 an-card an-card--hover">
+    <div class="an-card__hd">
+      <h3 class="an-card__title">How it works</h3>
+      <div class="an-card__sub">A modern, fast workflow.</div>
+    </div>
+    <div class="an-card__bd">
+      <div class="an-grid">
+        <div class="an-col-12 an-card" style="padding: 14px 14px;">
+          <div style="display:flex; gap: 12px;">
+            <div class="an-icon-box"><i class="fa fa-upload"></i></div>
+            <div>
+              <div style="font-weight: 900; font-size: 13px;">Upload</div>
+              <div style="color: var(--an-muted); font-size: 12px; margin-top: 4px;">Choose a leaf photo from your device.</div>
+            </div>
+          </div>
+        </div>
+        <div class="an-col-12 an-card" style="padding: 14px 14px;">
+          <div style="display:flex; gap: 12px;">
+            <div class="an-icon-box"><i class="fa fa-cogs"></i></div>
+            <div>
+              <div style="font-weight: 900; font-size: 13px;">Analyze</div>
+              <div style="color: var(--an-muted); font-size: 12px; margin-top: 4px;">Model runs locally on the server.</div>
+            </div>
+          </div>
+        </div>
+        <div class="an-col-12 an-card" style="padding: 14px 14px;">
+          <div style="display:flex; gap: 12px;">
+            <div class="an-icon-box"><i class="fa fa-check"></i></div>
+            <div>
+              <div style="font-weight: 900; font-size: 13px;">Act</div>
+              <div style="color: var(--an-muted); font-size: 12px; margin-top: 4px;">You'll get a result + recommended actions.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script type="text/javascript">
+  function preview_image(event) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var output = document.getElementById('output-image');
+      var skel = document.getElementById('preview-skeleton');
+      output.src = reader.result;
+      output.style.display = 'block';
+      if (skel) skel.style.display = 'none';
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  }
+</script>
+
+<script>
+  (function () {
+    var form = document.getElementById('disease-form');
+    var btn = document.getElementById('disease-btn');
+    var loader = document.getElementById('disease-loader');
+    if (!form || !btn || !loader) return;
+    form.addEventListener('submit', function () {
+      btn.disabled = true;
+      loader.style.display = 'inline-flex';
+    });
+  })();
+</script>
+
+{% endblock %}

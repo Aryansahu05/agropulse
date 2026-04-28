@@ -1,0 +1,145 @@
+{% extends 'layout.html' %}
+{% block page_body %}
+
+<div class="an-grid">
+  <section class="an-col-12 an-card an-card--hover">
+    <div class="an-card__hd">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap: 12px; flex-wrap: wrap;">
+        <div>
+          <h2 class="an-card__title" style="font-size: 16px;">AgriSens</h2>
+          <div class="an-card__sub">Explore the AgriSens platform inside AgroPulse (same UI, same data).</div>
+        </div>
+        <a class="an-btn an-btn--primary" href="{{ url_for('home') }}">
+          <i class="fa fa-th-large"></i> Back to Dashboard
+        </a>
+      </div>
+    </div>
+    <div class="an-card__bd">
+      <div class="an-grid">
+        <section class="an-col-5 an-card an-card--hover" style="padding: 16px 16px;">
+          <div style="display:flex; gap: 12px; align-items:flex-start;">
+            <div class="an-icon-box" aria-hidden="true">
+              <i class="fa fa-compass"></i>
+            </div>
+            <div style="min-width:0;">
+              <div style="font-weight: 900; font-size: 14px;">AgriSens Web App</div>
+              <div style="color: var(--an-muted); font-size: 12px; margin-top: 6px; line-height: 1.6;">
+                This is the AgriSens experience connected to AgroPulse. The content below is served from the same backend
+                APIs used in this project.
+              </div>
+              <div style="display:flex; gap: 10px; flex-wrap: wrap; margin-top: 12px;">
+                <a class="an-btn an-btn--primary" href="#crop-library">
+                  <i class="fa fa-leaf"></i> Crop Library
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="crop-library" class="an-col-12 an-card an-card--hover" style="padding: 16px 16px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap: 12px; flex-wrap: wrap;">
+            <div>
+              <div style="font-weight: 900; font-size: 14px;">Crop library</div>
+              <div style="color: var(--an-muted); font-size: 12px; margin-top: 6px;">
+                Ranges are derived from your dataset in the backend.
+              </div>
+            </div>
+            <button class="an-btn an-btn--ghost" type="button" id="reloadCrops">
+              <i class="fa fa-refresh"></i> Reload
+            </button>
+          </div>
+
+          <div style="margin-top: 12px; overflow-x: auto;">
+            <table class="table" aria-label="Crop conditions table" style="min-width: 980px;">
+              <thead>
+                <tr>
+                  <th>Crop</th>
+                  <th>Category</th>
+                  <th class="text-center">N</th>
+                  <th class="text-center">P</th>
+                  <th class="text-center">K</th>
+                  <th class="text-center">Temp (°C)</th>
+                  <th class="text-center">Humidity (%)</th>
+                  <th class="text-center">pH</th>
+                  <th class="text-center">Rainfall (mm)</th>
+                </tr>
+              </thead>
+              <tbody id="cropRows">
+                <tr><td colspan="9" style="color: var(--an-muted);">Loading crop library…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  function fmtRange(r, decimals) {
+    if (!r) return "—";
+    var d = (typeof decimals === "number") ? decimals : 0;
+    var mn = Number(r.min);
+    var mx = Number(r.max);
+    if (!isFinite(mn) || !isFinite(mx)) return "—";
+    return mn.toFixed(d) + " – " + mx.toFixed(d);
+  }
+
+  async function loadCropLibrary() {
+    var body = document.getElementById("cropRows");
+    if (!body) return;
+    body.innerHTML = "<tr><td colspan='9' style='color: var(--an-muted);'>Loading crop library…</td></tr>";
+
+    try {
+      var res = await fetch("/api/crop-library", { credentials: "same-origin" });
+      var data = await res.json();
+      if (!res.ok) throw new Error(data && data.error ? data.error : "Failed to load crop library.");
+      var crops = (data && data.crops) ? data.crops : [];
+      if (!crops.length) {
+        body.innerHTML = "<tr><td colspan='9' style='color: var(--an-muted);'>No crop data available.</td></tr>";
+        return;
+      }
+
+      body.innerHTML = crops.map(function (c) {
+        var cond = c.conditions || {};
+        var desc = (c.description || "").trim();
+        var label = (c.label || "");
+        var name = (c.name || c.label || "—");
+        var category = (c.category || "Other");
+
+        return (
+          "<tr>" +
+            "<td>" +
+              "<div style='font-weight:800; color: var(--an-text);'>" + name + "</div>" +
+              "<div style='color: var(--an-muted); font-size: 12px; margin-top: 2px;'>" + label + "</div>" +
+              "<div style='color: var(--an-muted); font-size: 12px; margin-top: 8px; line-height: 1.6; max-width: 560px;'>" +
+                (desc ? desc : "—") +
+              "</div>" +
+            "</td>" +
+            "<td><span style='display:inline-flex; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(49,98,99,0.18); background: rgba(49,98,99,0.08); color: var(--an-primary); font-weight:800; font-size: 12px; white-space:nowrap;'>" + category + "</span></td>" +
+            "<td class='text-center' style='white-space:nowrap;'>" + fmtRange(cond.N, 0) + "</td>" +
+            "<td class='text-center' style='white-space:nowrap;'>" + fmtRange(cond.P, 0) + "</td>" +
+            "<td class='text-center' style='white-space:nowrap;'>" + fmtRange(cond.K, 0) + "</td>" +
+            "<td class='text-center' style='white-space:nowrap;'>" + fmtRange(cond.temperature, 1) + "</td>" +
+            "<td class='text-center' style='white-space:nowrap;'>" + fmtRange(cond.humidity, 1) + "</td>" +
+            "<td class='text-center' style='white-space:nowrap;'>" + fmtRange(cond.ph, 2) + "</td>" +
+            "<td class='text-center' style='white-space:nowrap;'>" + fmtRange(cond.rainfall, 1) + "</td>" +
+          "</tr>"
+        );
+      }).join("");
+    } catch (e) {
+      body.innerHTML =
+        "<tr><td colspan='9' style='color: var(--an-muted);'>Could not load crop library. " +
+        (e && e.message ? e.message : "") +
+        "</td></tr>";
+    }
+  }
+
+  (function () {
+    loadCropLibrary();
+    var btn = document.getElementById("reloadCrops");
+    if (btn) btn.addEventListener("click", loadCropLibrary);
+  })();
+</script>
+
+{% endblock %}

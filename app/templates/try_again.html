@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+{% block page_body %}
+
+<div class="an-grid">
+  <section class="an-col-12 an-card an-card--hover">
+    <div class="an-card__hd">
+      <h2 class="an-card__title">Something went wrong</h2>
+      <div class="an-card__sub">We couldn't process your request right now.</div>
+    </div>
+    <div class="an-card__bd">
+      <div class="an-card" style="padding: 16px 16px;">
+        <div style="display:flex; gap: 12px; align-items:flex-start;">
+          <div class="an-icon-box" style="color: var(--an-accent);">
+            <i class="fa fa-exclamation-triangle"></i>
+          </div>
+          <div style="min-width:0;">
+            <div style="font-weight: 1000; font-size: 14px;">Please try again</div>
+            <div style="color: var(--an-muted); font-size: 12px; margin-top: 6px;">If the issue persists, try refreshing the page.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-wrap" style="gap: 10px; margin-top: 14px;">
+        <a class="an-btn an-btn--primary" href="{{ url_for('home') }}">
+          <i class="fa fa-arrow-left"></i> Back to dashboard
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
+{% endblock %}

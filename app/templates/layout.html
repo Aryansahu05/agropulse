@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>{{ title or ((config.BRAND_NAME if config and config.BRAND_NAME else 'AgroPulse') ~ ' - Earth-Smart Agriculture') }}</title>
+	<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}"/>
+
+	<!-- for-mobile-apps -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<meta name="keywords" content="AgroPulse agriculture platform, AI SaaS, crop prediction, disease detection, fertilizer optimizer, profit optimizer, smart farming, eco-digital agriculture" />
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+	<script>
+		addEventListener("load", function () {
+			setTimeout(hideURLbar, 0);
+		}, false);
+
+		function hideURLbar() {
+			window.scrollTo(0, 1);
+		}
+
+	</script>
+
+	<!-- css files -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel='stylesheet' type='text/css' />
+	<!-- bootstrap css -->
+	<link href="{{ url_for('static', filename='css/style.css') }}" rel='stylesheet' type='text/css' />
+	<link href="{{ url_for('static', filename='css/agrinova.css') }}" rel='stylesheet' type='text/css' />
+	<!-- custom css -->
+	<link href="{{ url_for('static', filename='css/font-awesome.min.css') }}" rel="stylesheet"><!-- fontawesome css -->
+	<!-- //css files -->
+	<!-- <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png?') }}"> -->
+
+	<script type="text/JavaScript" src="{{ url_for('static', filename='scripts/cities.js') }}"></script>
+	<script type="text/JavaScript" src="{{ url_for('static', filename='scripts/agrinova.js') }}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+
+	<!-- google fonts -->
+	<link href="//fonts.googleapis.com/css?family=Thasadith:400,400i,700,700i&amp;subset=latin-ext,thai,vietnamese"
+		rel="stylesheet">
+	<!-- //google fonts -->
+
+</head>
+
+<body>
+	{% set brand_name = (config.BRAND_NAME if config and config.BRAND_NAME else 'AgroPulse') %}
+	{% set tagline = (config.BRAND_TAGLINE if config and config.BRAND_TAGLINE else 'Earth-Smart AI for Modern Agriculture') %}
+
+	{% if request.endpoint and request.endpoint.startswith('auth.') %}
+		<div class="an-auth">
+			<main class="an-auth__main">
+				<div class="an-auth__brand">
+					<div class="an-logo" aria-hidden="true"><i class="fa fa-leaf"></i></div>
+					<div>
+						<div class="an-auth__name">{{ brand_name }}</div>
+						<div class="an-auth__tagline">{{ tagline }}</div>
+					</div>
+				</div>
+				<div class="an-auth__panel an-card an-card--hover">
+					{{ self.page_body() }}
+				</div>
+				<div class="an-auth__foot">© {{ brand_name }} — Eco-Digital Agriculture Platform</div>
+			</main>
+		</div>
+	{% else %}
+	<div class="an-app">
+		<!-- Mobile overlay -->
+		<div class="an-overlay" data-an-overlay></div>
+
+		<!-- Sidebar -->
+		<aside class="an-sidebar" data-an-sidebar>
+			<div class="an-sidebar__brand">
+				<a class="an-brand" href="{{ url_for('home') }}" aria-label="{{ brand_name }} home">
+					<span class="an-logo" aria-hidden="true">
+						<i class="fa fa-leaf"></i>
+					</span>
+					<span class="an-brand__text">
+						<span class="an-brand__name">{{ brand_name }}</span>
+						<span class="an-brand__tagline">{{ tagline }}</span>
+					</span>
+				</a>
+			</div>
+
+			<nav class="an-nav">
+				<a class="an-nav__item {% if request.path == '/' %}is-active{% endif %}" href="{{ url_for('home') }}">
+					<span class="an-nav__icon"><i class="fa fa-th-large"></i></span>
+					<span class="an-nav__label">Dashboard</span>
+				</a>
+				<a class="an-nav__item {% if request.path.startswith('/crop') %}is-active{% endif %}" href="{{ url_for('crop_recommendation') }}">
+					<span class="an-nav__icon"><i class="fa fa-line-chart"></i></span>
+					<span class="an-nav__label">Crop Prediction</span>
+				</a>
+				<a class="an-nav__item {% if request.path.startswith('/disease') %}is-active{% endif %}" href="{{ url_for('disease_prediction') }}">
+					<span class="an-nav__icon"><i class="fa fa-bug"></i></span>
+					<span class="an-nav__label">Disease Detection</span>
+				</a>
+				<a class="an-nav__item {% if request.path.startswith('/profit-optimizer') %}is-active{% endif %}" href="{{ url_for('profit_optimizer_ui') }}">
+					<span class="an-nav__icon"><i class="fa fa-area-chart"></i></span>
+					<span class="an-nav__label">Profit Optimizer</span>
+				</a>
+				<a class="an-nav__item {% if request.path.startswith('/fertilizer') %}is-active{% endif %}" href="{{ url_for('fertilizer_recommendation') }}">
+					<span class="an-nav__icon"><i class="fa fa-flask"></i></span>
+					<span class="an-nav__label">Fertilizer Optimizer</span>
+				</a>
+				<a class="an-nav__item {% if request.path.startswith('/profile') %}is-active{% endif %}" href="{{ url_for('profile') }}">
+					<span class="an-nav__icon"><i class="fa fa-user"></i></span>
+					<span class="an-nav__label">Profile</span>
+				</a>
+			</nav>
+
+			<div class="an-sidebar__foot">
+				<div class="an-mini">
+					<div class="an-mini__label">Signed in</div>
+					<div class="an-mini__value">
+						{% if current_user %}{{ current_user.full_name }}{% else %}Guest{% endif %}
+					</div>
+				</div>
+				{% if current_user %}
+					<a class="an-btn an-btn--ghost an-btn--full" href="{{ url_for('auth.logout') }}">
+						<i class="fa fa-sign-out"></i> Logout
+					</a>
+				{% else %}
+					<a class="an-btn an-btn--primary an-btn--full" href="{{ url_for('auth.login') }}">
+						<i class="fa fa-sign-in"></i> Login
+					</a>
+				{% endif %}
+			</div>
+		</aside>
+
+		<!-- Main -->
+		<div class="an-main">
+			<header class="an-topbar">
+				<button class="an-iconbtn an-topbar__menu" type="button" aria-label="Toggle sidebar" data-an-toggle>
+					<i class="fa fa-bars"></i>
+				</button>
+
+				<div class="an-topbar__title">
+					<div class="an-topbar__h">{{ title or (brand_name ~ ' - Dashboard') }}</div>
+					<div class="an-topbar__sub">Earth-smart tools for modern agriculture</div>
+				</div>
+
+				<div class="an-topbar__right">
+					<a class="an-pill" href="{{ url_for('profile') }}">
+						<span class="an-pill__dot" aria-hidden="true"></span>
+						<span class="an-pill__text">{% if current_user %}{{ current_user.full_name }}{% else %}Profile{% endif %}</span>
+					</a>
+				</div>
+			</header>
+
+			<main class="an-content" data-an-content>
+				<div class="an-page" data-an-page>
+					<div class="an-container">
+						{{ self.page_body() }}
+					</div>
+				</div>
+			</main>
+
+			<footer class="an-footer">
+				<div class="an-footer__left">
+					<div class="an-footer__brand">
+						<span class="an-footer__logo"><i class="fa fa-leaf"></i></span>
+						<span class="an-footer__name">{{ brand_name }}</span>
+					</div>
+					<div class="an-footer__tagline">{{ tagline }}</div>
+				</div>
+				<div class="an-footer__right">
+					<span class="an-footer__muted">© {{ brand_name }} — Eco-Digital Agriculture Platform</span>
+				</div>
+			</footer>
+		</div>
+	</div>
+	{% endif %}
+
+	<!-- Minimal JS deps (kept for legacy pages that rely on Bootstrap components) -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>

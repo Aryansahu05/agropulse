@@ -1,0 +1,134 @@
+{% extends 'layout.html' %}
+{% block page_body %}
+{% set brand_name = (config.BRAND_NAME if config and config.BRAND_NAME else 'AgroPulse') %}
+{% set tagline = (config.BRAND_TAGLINE if config and config.BRAND_TAGLINE else 'Earth-Smart AI for Modern Agriculture') %}
+
+<div class="an-grid">
+  <section class="an-col-12 an-card an-card--hover">
+    <div class="an-card__hd">
+      <h2 class="an-card__title" style="font-size: 18px;">Welcome to {{ brand_name }}</h2>
+      <div class="an-card__sub">{{ tagline }} — run AI workflows, track outcomes, and optimize decisions.</div>
+    </div>
+    <div class="an-card__bd">
+      <div class="d-flex flex-wrap" style="gap: 10px;">
+        <a class="an-btn an-btn--primary" href="{{ url_for('crop_recommendation') }}"><i class="fa fa-line-chart"></i> Crop Prediction</a>
+        <a class="an-btn an-btn--ghost" href="{{ url_for('disease_prediction') }}"><i class="fa fa-bug"></i> Disease Detection</a>
+        <a class="an-btn an-btn--ghost" href="{{ url_for('profit_optimizer_ui') }}"><i class="fa fa-area-chart"></i> Profit Optimizer</a>
+        <a class="an-btn an-btn--ghost" href="{{ url_for('fertilizer_recommendation') }}"><i class="fa fa-flask"></i> Fertilizer Optimizer</a>
+        <a class="an-btn an-btn--ghost" href="{{ url_for('agrisens') }}"><i class="fa fa-compass"></i> Explore Platform</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="an-col-3 an-card an-card--hover an-kpi">
+    <div class="an-kpi__row">
+      <div>
+        <div class="an-kpi__label">AI Workflows</div>
+        <div class="an-kpi__value">4</div>
+      </div>
+      <div class="an-kpi__trend">Active</div>
+    </div>
+  </section>
+
+  <section class="an-col-3 an-card an-card--hover an-kpi">
+    <div class="an-kpi__row">
+      <div>
+        <div class="an-kpi__label">Uptime</div>
+        <div class="an-kpi__value">99.9%</div>
+      </div>
+      <div class="an-kpi__trend">Stable</div>
+    </div>
+  </section>
+
+  <section class="an-col-3 an-card an-card--hover an-kpi">
+    <div class="an-kpi__row">
+      <div>
+        <div class="an-kpi__label">Decisions / Day</div>
+        <div class="an-kpi__value">12</div>
+      </div>
+      <div class="an-kpi__trend">+18%</div>
+    </div>
+  </section>
+
+  <section class="an-col-3 an-card an-card--hover an-kpi">
+    <div class="an-kpi__row">
+      <div>
+        <div class="an-kpi__label">Projected ROI</div>
+        <div class="an-kpi__value">&uarr;</div>
+      </div>
+      <div class="an-kpi__trend">Optimized</div>
+    </div>
+  </section>
+
+  <section class="an-col-8 an-card an-card--hover">
+    <div class="an-card__hd">
+      <h3 class="an-card__title">Analytics</h3>
+      <div class="an-card__sub">Weekly AI decision trend.</div>
+    </div>
+    <div class="an-card__bd">
+      <canvas id="anChart" height="120"></canvas>
+    </div>
+  </section>
+
+  <section class="an-col-4 an-card an-card--hover">
+    <div class="an-card__hd">
+      <h3 class="an-card__title">Quick status</h3>
+      <div class="an-card__sub">What's ready at a glance.</div>
+    </div>
+    <div class="an-card__bd">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+        <span style="width:10px;height:10px;border-radius:999px;background:var(--an-primary);flex-shrink:0;"></span>
+        <span style="font-size:13px;font-weight:600;">Crop model loaded</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+        <span style="width:10px;height:10px;border-radius:999px;background:var(--an-accent);flex-shrink:0;"></span>
+        <span style="font-size:13px;font-weight:600;">Disease model ready</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px;">
+        <span style="width:10px;height:10px;border-radius:999px;background:var(--an-primary);flex-shrink:0;"></span>
+        <span style="font-size:13px;font-weight:600;">Profit engine online</span>
+      </div>
+      <a class="an-btn an-btn--primary an-btn--full" href="{{ url_for('profit_optimizer_ui') }}">
+        <i class="fa fa-magic"></i> Run Profit Optimizer
+      </a>
+    </div>
+  </section>
+</div>
+
+<script>
+  (function () {
+    var el = document.getElementById('anChart');
+    if (!el || !window.Chart) return;
+    var ctx = el.getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        datasets: [{
+          label: 'AI decisions',
+          data: [6, 8, 7, 10, 9, 12, 11],
+          borderColor: '#316263',
+          backgroundColor: 'rgba(49,98,99,0.10)',
+          fill: true,
+          tension: 0.35,
+          pointRadius: 4,
+          pointBackgroundColor: '#C36A4A',
+          pointBorderColor: '#C36A4A'
+        }]
+      },
+      options: {
+        responsive: true,
+        animation: { duration: 650, easing: 'easeOutQuart' },
+        plugins: {
+          legend: { labels: { color: '#2C3A2E', font: { weight: 600 } } }
+        },
+        scales: {
+          x: { ticks: { color: 'rgba(44,58,46,0.58)' }, grid: { color: 'rgba(49,98,99,0.08)' } },
+          y: { ticks: { color: 'rgba(44,58,46,0.58)' }, grid: { color: 'rgba(49,98,99,0.08)' } }
+        }
+      }
+    });
+  })();
+</script>
+
+{% endblock %}

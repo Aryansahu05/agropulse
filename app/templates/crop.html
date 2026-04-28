@@ -1,0 +1,112 @@
+{% extends 'layout.html' %}
+{% block page_body %}
+
+<div class="an-grid">
+  <section class="an-col-7 an-card an-card--hover">
+    <div class="an-card__hd">
+      <h2 class="an-card__title">Crop Prediction</h2>
+      <div class="an-card__sub">Enter soil + climate signals and get the best crop recommendation.</div>
+    </div>
+    <div class="an-card__bd">
+      {% if error %}
+      <div class="alert alert-danger" role="alert" style="border-radius: 14px;">{{ error }}</div>
+      {% endif %}
+
+      <form id="crop-form" method="POST" action="{{ url_for('predict_crop') }}" class="an-form">
+        <div class="an-grid">
+          <div class="an-col-6 an-field">
+            <label>Nitrogen (N)</label>
+            <input type="number" step="any" class="an-input" name="nitrogen" placeholder="e.g. 60" required />
+          </div>
+          <div class="an-col-6 an-field">
+            <label>Phosphorous (P)</label>
+            <input type="number" step="any" class="an-input" name="phosphorous" placeholder="e.g. 45" required />
+          </div>
+          <div class="an-col-6 an-field">
+            <label>Potassium (K)</label>
+            <input type="number" step="any" class="an-input" name="pottasium" placeholder="e.g. 50" required />
+          </div>
+          <div class="an-col-6 an-field">
+            <label>Soil pH</label>
+            <input type="number" step="any" class="an-input" name="ph" placeholder="e.g. 6.5" required />
+          </div>
+          <div class="an-col-4 an-field">
+            <label>Temperature (&deg;C)</label>
+            <input type="number" step="any" class="an-input" name="temperature" placeholder="e.g. 25" required />
+          </div>
+          <div class="an-col-4 an-field">
+            <label>Humidity (%)</label>
+            <input type="number" step="any" class="an-input" name="humidity" placeholder="e.g. 80" required />
+          </div>
+          <div class="an-col-4 an-field">
+            <label>Rainfall (mm)</label>
+            <input type="number" step="any" class="an-input" name="rainfall" placeholder="e.g. 200" required />
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap" style="gap: var(--an-s2); align-items: center;">
+          <button id="predict-btn" type="submit" class="an-btn an-btn--primary">
+            <i class="fa fa-magic"></i> Predict crop
+          </button>
+          <div id="loader" style="display:none; align-items:center; gap: 10px; color: var(--an-muted); font-weight: 700; font-size: 12px;">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Running model...
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <aside class="an-col-5 an-card an-card--hover">
+    <div class="an-card__hd">
+      <h3 class="an-card__title">What you'll get</h3>
+      <div class="an-card__sub">Fast recommendations designed for clarity.</div>
+    </div>
+    <div class="an-card__bd">
+      <div class="an-grid" style="gap: var(--an-s2);">
+        <div class="an-col-12 an-card" style="padding: 14px 14px;">
+          <div style="display:flex; gap: 12px;">
+            <div class="an-icon-box"><i class="fa fa-line-chart"></i></div>
+            <div style="min-width:0;">
+              <div style="font-weight: 900; font-size: 13px;">Top crop + confidence</div>
+              <div style="color: var(--an-muted); font-size: 12px; margin-top: 4px;">Model picks the best match for your conditions.</div>
+            </div>
+          </div>
+        </div>
+        <div class="an-col-12 an-card" style="padding: 14px 14px;">
+          <div style="display:flex; gap: 12px;">
+            <div class="an-icon-box"><i class="fa fa-list-ol"></i></div>
+            <div style="min-width:0;">
+              <div style="font-weight: 900; font-size: 13px;">Top-3 alternatives</div>
+              <div style="color: var(--an-muted); font-size: 12px; margin-top: 4px;">Compare options instantly on the results page.</div>
+            </div>
+          </div>
+        </div>
+        <div class="an-col-12 an-card" style="padding: 14px 14px;">
+          <div style="display:flex; gap: 12px;">
+            <div class="an-icon-box"><i class="fa fa-lightbulb-o"></i></div>
+            <div style="min-width:0;">
+              <div style="font-weight: 900; font-size: 13px;">Growing tips</div>
+              <div style="color: var(--an-muted); font-size: 12px; margin-top: 4px;">Actionable guidance (when available).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+  (function () {
+    var form = document.getElementById('crop-form');
+    var btn = document.getElementById('predict-btn');
+    var loader = document.getElementById('loader');
+    if (!form || !btn || !loader) return;
+    form.addEventListener('submit', function () {
+      btn.disabled = true;
+      loader.style.display = 'inline-flex';
+    });
+  })();
+</script>
+
+{% endblock %}

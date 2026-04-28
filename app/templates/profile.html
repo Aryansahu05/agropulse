@@ -1,0 +1,69 @@
+{% extends 'layout.html' %}
+{% block page_body %}
+
+{% set brand_name = (config.BRAND_NAME if config and config.BRAND_NAME else 'AgroPulse') %}
+
+<div class="an-grid">
+  <section class="an-col-8 an-card an-card--hover">
+    <div class="an-card__hd">
+      <h2 class="an-card__title">Profile</h2>
+      <div class="an-card__sub">Account details and platform preferences.</div>
+    </div>
+    <div class="an-card__bd">
+      <div class="an-grid">
+        <div class="an-col-6">
+          <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 700; margin-bottom: 8px;">Full name</label>
+          <input class="an-input" value="{% if current_user %}{{ current_user.full_name }}{% endif %}" readonly />
+        </div>
+        <div class="an-col-6">
+          <label class="d-block" style="color: var(--an-muted); font-size: 12px; font-weight: 700; margin-bottom: 8px;">Email</label>
+          <input class="an-input" value="{% if current_user %}{{ current_user.email }}{% endif %}" readonly />
+        </div>
+        <div class="an-col-12">
+          <div class="an-card an-card--hover" style="padding: 14px 14px;">
+            <div style="display:flex; align-items:flex-start; gap: 12px;">
+              <div class="an-icon-box">
+                <i class="fa fa-shield"></i>
+              </div>
+              <div style="min-width:0;">
+                <div style="font-weight: 800; font-size: 13px;">Security</div>
+                <div style="color: var(--an-muted); font-size: 12px; margin-top: 4px;">
+                  Your password is hashed and never stored in plain text.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="an-col-4 an-card an-card--hover">
+    <div class="an-card__hd">
+      <h3 class="an-card__title">{{ brand_name }} plan</h3>
+      <div class="an-card__sub">AI modules enabled.</div>
+    </div>
+    <div class="an-card__bd">
+      <div style="display:flex; flex-direction: column; gap: 10px;">
+        <div class="an-card" style="padding: 12px 12px;">
+          <div style="display:flex; justify-content: space-between; gap: 10px;">
+            <div style="font-weight: 800; font-size: 13px;">Modules</div>
+            <div style="color: var(--an-accent); font-weight: 800;">4 active</div>
+          </div>
+          <div style="color: var(--an-muted); font-size: 12px; margin-top: 6px;">
+            Crop Prediction, Disease Detection, Profit Optimizer, Fertilizer Optimizer.
+          </div>
+        </div>
+
+        <a class="an-btn an-btn--primary an-btn--full" href="{{ url_for('home') }}">
+          <i class="fa fa-th-large"></i> Back to Dashboard
+        </a>
+        <a class="an-btn an-btn--ghost an-btn--full" href="{{ url_for('auth.logout') }}">
+          <i class="fa fa-sign-out"></i> Logout
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
+{% endblock %}
